@@ -3,7 +3,9 @@ var fs = require('fs');      //内置文件系统模块
 var path = require('path');  //内置文件系统路径模块
 var mime = require('mime');  //第三方模块，判断文件MIME类型
 
-var cache = {}   //用来缓存文件内容的对象
+var chatServer = require('./lib/chat_server');  //基于socket.IO的服务器聊天功能
+
+var cache = {};   //用来缓存文件内容的对象
 
 //发送404页面
 function send404(response) {
@@ -52,9 +54,11 @@ var server = http.createServer(function(request,response) {
     } else {
         filePath = 'public' + request.url;
     }
-    var absPath = './'+ filePath;
+    var absPath = './'+ filePath;   //根目录
     serverStatic(response, cache,absPath);
 });
+
+chatServer.listen(server);    //启动socket.IO
 
 server.listen(3000,function(){
     console.log("server listening on port 3000.");
